@@ -3,14 +3,9 @@ const ProductModel = require('../models/productModel')
 // thay vì mình modul export thì exports luôn (theo dạng ES5)
 exports.getAllProducts = async (req, res) => {
     try {
-        let products
+        console.log("Query Params: ", req.query);
+        const products = await ProductModel.getAllProducts(req.query)
 
-        if (req.query.category) {
-            products = await ProductModel.getAllProducts(req.query.category)
-        }
-        else {
-            products = await ProductModel.getAllProducts()
-        }
         return res.status(200).json({
             status: "success",
             message: "Get Product success",

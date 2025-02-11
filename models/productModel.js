@@ -1,20 +1,38 @@
 const db = require('../config/db')
 
 class ProductModel {
-    static async getAllProducts(category) {
+    // đã sữa đc lỗi nhập category hay không nhập 
+    static async getAllProducts({ categoryid, shopid }) {
         try {
-            const sql = 'SELECT ProductName, Price, CategoryID FROM Products'
-            const [products] = await db.query(sql) // truy vấn
-            let filteredProducts = [...products] // giải ra để copy mảng tránh trỏ cùng đối tượng
-            if (category) {
-                filteredProducts = filteredProducts.filter((product) => {
-                    return product.CategoryID === category
-                })
+            let sql = 'SELECT ProductName, Price, CategoryID FROM Products'
+            const params = []
+            const conditions = [] // mảng lưu các điều kiện lọc 
+
+            // let filteredProducts = [...products] // giải ra để copy mảng tránh trỏ cùng đối tượng
+
+            if (categoryid) {
+                console.log("Category received:", categoryid)
+                conditions.push('CategoryID = ?')
+                params.push(categoryid.trim()) // loại bỏ khoảng trắng nếu có 
             }
-            return filteredProducts
+
+            if (shopid) {
+                console.log("Shop received: ", shopid)
+                conditions.push('ShopID = ?')
+                params.push(shopid.trim())
+            }
+
+            // nếu có một điều kiện
+            if (conditions.length > 0) {
+                sql += ' WHERE ' + conditions.join(' AND ')
+            }
+
+            console.log("Final SQL Query:", sql, params); // Debug
+            const [products] = await db.query(sql, params) // truy vấn
+            return products
         }
 
-        catch (err){
+        catch (err) {
             throw err
         }
     }
