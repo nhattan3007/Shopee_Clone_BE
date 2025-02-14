@@ -36,6 +36,21 @@ class ProductModel {
             throw err
         }
     }
+
+    // dùng POST để tạo dữ liệu mới 
+    static async createProducts({ productid, categoryid, shopid, productname }) {
+        try {
+            const sql = `INSERT INTO Products (ProductID, CategoryID, ShopID, ProductName) VALUES (?, ?, ?, ?)`;
+            const params = [productid, categoryid, shopid, productname]
+
+
+            console.log("Final SQL Query:",sql, params) // Debug
+            const [result] = await db.query(sql, params) // truy vấn
+            return { ProductID: result.insertId };
+        } catch (err) {
+            throw err
+        }
+    }
 }
 
 // hàm Model gọi SQL

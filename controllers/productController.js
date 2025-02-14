@@ -22,4 +22,25 @@ exports.getAllProducts = async (req, res) => {
     }
 }
 
+// nhận dữ liệu từ body not request nhé 
+exports.createProducts = async (req, res) => {
+    try {
+        console.log("Resquest Body: ", req.body)
+        const newProduct = await ProductModel.createProducts(req.body)
+
+        return res.status(200).json({
+            status: "success",
+            message: "Create Product success",
+            data: { ProductID: newProduct.ProductID }
+        })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            status: "failed",
+            message: "Create Products failed",
+            data: null
+        })
+    }
+}
+
 // Controller điều phối
